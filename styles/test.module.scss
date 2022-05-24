@@ -1,0 +1,33 @@
+@import "variable.module";
+
+.description {
+  font-size: $description-font-size;
+  color: $description-font-color;
+}
+
+.description__cell {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+
+  &:not([data-active="true"]) {
+    border: solid 1.5px #ABA7A5;
+    background-color: $purple-light;
+  }
+
+  &[data-active="true"] {
+    background-color: $purple-regular;
+  }
+
+}
+
+
+.description__textBall {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: $purple-regular;
+  border-radius: 100px;
+  vertical-align: middle;
+}

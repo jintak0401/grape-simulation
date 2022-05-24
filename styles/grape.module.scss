@@ -1,0 +1,49 @@
+@import "variable.module";
+
+.grape {
+  width: 350px;
+  height: 350px;
+  display: grid;
+  gap: 1px 1px;
+  cursor: pointer;
+
+  &[data-round="0"] {
+    grid-template-rows: repeat(9, 1fr);
+    grid-template-columns: repeat(9, 1fr);
+  }
+  &[data-round="1"] {
+    grid-template-rows: repeat(15, 1fr);
+    grid-template-columns: repeat(15, 1fr);
+  }
+  &[data-round="2"] {
+    grid-template-rows: repeat(27, 1fr);
+    grid-template-columns: repeat(27, 1fr);
+  }
+
+  &[data-ready="true"] {
+    filter: blur(10px);
+  }
+}
+
+.grape__cell:not([data-active="true"]) {
+  background: $purple-light;
+  border: solid 1.2px $grey;
+}
+
+.grape__cell[data-active="true"] {
+  background: $purple-regular;
+}
+
+.startButton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  font-size: 20px;
+  padding: 10px 20px;
+  background-color: $purple-regular;
+  border: 0;
+  border-radius: $border-radius;
+  color: white;
+}

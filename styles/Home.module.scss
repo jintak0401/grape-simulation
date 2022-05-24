@@ -1,0 +1,110 @@
+@import "variable.module";
+
+.innerContainer {
+  max-width: 800px;
+  min-height: 600px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 15px;
+}
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  transition: 0.3s $animation background-color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+
+.poster {
+  width: 100%;
+  aspect-ratio: 1.6/1;
+  position: relative;
+}
+
+@mixin mixin__goNextButton($active: true) {
+  display: block;
+  width: 90%;
+  padding: 10px 15px;
+  margin: 30px auto 0;
+  color: white;
+  border: solid 0;
+  border-radius: $border-radius;
+  font-size: 20px;
+  transition: 0.3s $animation background-color;
+
+  @if $active {
+    background-color: $purple-regular;
+    cursor: pointer;
+  }
+  @else {
+    background-color: $purple-light;
+    cursor: not-allowed;
+  }
+}
+
+.goNextButton {
+  @include mixin__goNextButton();
+
+  &[data-disabled="true"] {
+    @include mixin__goNextButton(false);
+  }
+}
+
+.title {
+  color: $title-font-color;
+}
+
+.description {
+  color: $description-font-color;
+  font-size: $description-font-size;
+}
+
+.displayTestState {
+  width: 350px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin mixin__displayTest__element() {
+  margin: 10px 0 5px;
+}
+
+.displayTest__element {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: $display-state-font-size;
+  @include mixin__displayTest__element();
+}
+
+.displayTestState__element__grape {
+  display: inline-block;
+  margin-right: 5px;
+  background-color: $purple-regular;
+  border: solid 1px $purple-heavy;
+  border-radius: 100px;
+  width: 30px;
+  height: 30px;
+}
+
+.displayTestState__element__heart {
+  display: inline-block;
+  font-size: 30px;
+}
+
+.displayTestState__element__time {
+  display: inline-block;
+  color: $red-color;
+  font-size: $display-state-font-size;
+  align-items: center;
+  @include mixin__displayTest__element();
+}

@@ -1,164 +1,48 @@
-import {
-	createSelector,
-	createSlice,
-	PayloadAction,
-	createAsyncThunk,
-} from '@reduxjs/toolkit';
-import { ThemeEnum } from '@features/themeSlice';
-import axios from 'axios';
-import { testLength } from '@lib/testset';
-
-enum FontTypeEnum {
-	Light,
-	Regular,
-	Bold,
-}
-
-enum GenderEnum {
-	Male = 1,
-	Female,
-}
-
-enum TestTypeEnum {
-	StopWatch,
-	Timer,
-}
-
-interface AnsResult {
-	ansButNotPick: number; // 정답이지만 고르지 않은 개수
-	notAnsButPick: number; // 정답이 아니지만 고른 개수
-}
-
-interface TestResult {
-	darkTime: number[];
-	lightTime: number[];
-	darkAnsResult: AnsResult[];
-	lightAnsResult: AnsResult[];
-}
-
-const defaultFontSize = 20;
-interface SurveyState {
-	usuallyMode: string;
-	age?: number;
-	gender?: GenderEnum;
-	moreReadableMode?: string;
-	moreComfortableMode?: string;
-	device?: string;
-	fontSize: number;
-	howOften?: number;
-}
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface TestState {
-	startTime: string;
 	round: number;
-	turn: number;
-	testAns: number[];
-	userAns: number[];
-	fontType: FontTypeEnum;
-	testType: TestTypeEnum;
-	ready: boolean;
+	step: number;
 	timer: number;
-	recordDone: boolean;
+	correct: number[];
+	wrong: number[];
 }
 
-interface TotalTestState extends TestResult, SurveyState, TestState {
-	testStep: number;
+interface TotalTestState extends TestState {
+	offset: number[][][]; // [round][구역][x, y]
 }
 
-const defaultTimerTime = 9;
-const initialState: TotalTestState = {
-	darkTime: [],
-	lightTime: [],
-	darkAnsResult: [],
-	lightAnsResult: [],
-	usuallyMode: '',
-	moreComfortableMode: '',
-	moreReadableMode: '',
-	startTime: '',
-	round: 0,
-	turn: 0,
-	testAns: [],
-	userAns: [],
-	fontType: FontTypeEnum.Light,
-	testType: TestTypeEnum.StopWatch,
-	ready: false,
-	timer: defaultTimerTime,
-	testStep: 0,
-	recordDone: false,
-	fontSize: defaultFontSize,
+const initOffset = () => {
+	return Array.from({ length: 3 }, () => Array.from({ length: 9 }, () => []));
 };
 
-const getTestResult = createSelector(
-	[(state: RootState) => state.testReducer],
-	(state: TotalTestState): TestResult => ({
-		darkTime: state.darkTime,
-		lightTime: state.lightTime,
-		darkAnsResult: state.darkAnsResult,
-		lightAnsResult: state.lightAnsResult,
-	})
-);
+const defaultTimer = 20;
+const initialState: TotalTestState = {
+	round: 0,
+	step: 0,
+	timer: 0,
+	correct: [0, 0, 0],
+	wrong: [0, 0, 0],
+	offset: initOffset(),
+};
 
-const getTestState = createSelector(
+interface CurTestState {
+	round: number;
+	step: number;
+	timer: number;
+	curCorrect: number;
+	curWrong: number;
+}
+
+const getCurTestState = createSelector(
 	[(state: RootState) => state.testReducer],
-	(state: TotalTestState): TestState => ({
-		startTime: state.startTime,
+	(state: TotalTestState): CurTestState => ({
 		round: state.round,
-		turn: state.turn,
-		testAns: state.testAns,
-		userAns: state.userAns,
-		fontType: state.fontType,
-		testType: state.testType,
-		ready: state.ready,
+		step: state.step,
 		timer: state.timer,
-		recordDone: state.recordDone,
+		curCorrect: state.correct[state.round],
+		curWrong: state.wrong[state.round],
 	})
-);
-
-const getSurveyState = createSelector(
-	[(state: RootState) => state.testReducer],
-	(state: TotalTestState): SurveyState => ({
-		usuallyMode: state.usuallyMode,
-		age: state.age,
-		moreReadableMode: state.moreReadableMode,
-		moreComfortableMode: state.moreComfortableMode,
-		gender: state.gender,
-		device: state.device,
-		fontSize: state.fontSize,
-		howOften: state.howOften,
-	})
-);
-
-const getFinishedTest = createSelector(
-	[(state: RootState) => state.testReducer],
-	(state: TotalTestState) => {
-		if (
-			state.lightAnsResult.length === 2 * testLength &&
-			state.darkAnsResult.length === 2 * testLength
-		)
-			return 2;
-		else if (
-			state.lightAnsResult.length >= testLength &&
-			state.darkAnsResult.length >= testLength
-		)
-			return 1;
-		else return 0;
-	}
-);
-
-interface RecordRequestData extends SurveyState, TestResult {}
-
-const requestRecord = createAsyncThunk(
-	'request/record',
-	async (recordRequestData: RecordRequestData, thunkApi) => {
-		try {
-			const response = await axios.post('/api/record', recordRequestData);
-			if (response.data?.id !== undefined) {
-				return true;
-			}
-		} catch (e) {
-			return thunkApi.rejectWithValue('cannot record result');
-		}
-	}
 );
 
 const testSlice = createSlice({
@@ -166,194 +50,59 @@ const testSlice = createSlice({
 	initialState,
 	reducers: {
 		initAll: (state) => {
-			state.darkTime = [];
-			state.lightTime = [];
-			state.darkAnsResult = [];
-			state.lightAnsResult = [];
-			state.usuallyMode = '';
-			state.startTime = '';
 			state.round = 0;
-			state.turn = 0;
-			state.testAns = [];
-			state.userAns = [];
-			state.fontType = FontTypeEnum.Light;
-			state.testType = TestTypeEnum.StopWatch;
-			state.ready = false;
-			state.timer = defaultTimerTime;
-			state.testStep = 0;
-			state.recordDone = false;
+			state.offset = initOffset();
+			state.timer = defaultTimer;
+			state.correct = [0, 0, 0];
+			state.wrong = [0, 0, 0];
 		},
-		recordResult: (
-			state,
-			{ payload }: PayloadAction<ThemeEnum.Dark | ThemeEnum.Light>
-		) => {
-			const time =
-				state.round < testLength
-					? +new Date() - +new Date(JSON.parse(state.startTime))
-					: 0;
-			const ansButNotPick = state.testAns.filter(
-				(x: number) => !state.userAns.includes(x)
-			).length;
-			const notAnsButPick = state.userAns.filter(
-				(x: number) => !state.testAns.includes(x)
-			).length;
-			const ansResult = { ansButNotPick, notAnsButPick };
-			if (payload == ThemeEnum.Dark) {
-				state.round < testLength && (state.darkTime[state.round] = time);
-				state.darkAnsResult[state.round] = ansResult;
-			} else {
-				state.round < testLength && (state.lightTime[state.round] = time);
-				state.lightAnsResult[state.round] = ansResult;
-			}
+		addWrong: (state) => {
+			state.wrong[state.round]++;
 		},
-		setStart: (state) => {
-			state.startTime = JSON.stringify(new Date());
+		addCorrect: (state) => {
+			state.correct[state.round]++;
 		},
-		goNextTurn: (state) => {
-			state.testStep++;
-			state.turn = Math.floor(state.testStep / testLength);
-			state.round =
-				(state.testStep % testLength) +
-				testLength * Math.floor(state.testStep / (2 * testLength));
-			switch (state.round) {
-				case 0:
-				case 3:
-					state.fontType = FontTypeEnum.Light;
-					break;
-				case 1:
-				case 4:
-					state.fontType = FontTypeEnum.Regular;
-					break;
-				case 2:
-				case 5:
-					state.fontType = FontTypeEnum.Bold;
-					break;
-				default:
-			}
-			state.userAns = [];
+		goNextStep: (state) => {
+			state.step++;
 		},
-		initTest: (state, { payload }: PayloadAction<TestTypeEnum | undefined>) => {
-			state.testType = payload || TestTypeEnum.StopWatch;
-			state.startTime = '';
-			state.round = payload === TestTypeEnum.Timer ? testLength : 0;
-			state.turn = payload === TestTypeEnum.Timer ? 2 : 0;
-			state.fontType = FontTypeEnum.Light;
-			state.ready = true;
-			state.userAns = [];
-			state.darkAnsResult.length =
-				payload === TestTypeEnum.Timer ? testLength : 0;
-			state.lightAnsResult.length =
-				payload === TestTypeEnum.Timer ? testLength : 0;
-			state.testStep = payload === TestTypeEnum.Timer ? 2 * testLength : 0;
-			state.recordDone = false;
-		},
-		resetUserAns: (state) => {
-			state.userAns = [];
-		},
-		setUserAns: (state, { payload }: PayloadAction<number>) => {
-			const idx = state.userAns.indexOf(payload);
-			if (idx !== -1) state.userAns.splice(idx, 1);
-			else state.userAns.push(payload);
-		},
-		setTestAns: (state, { payload }: PayloadAction<number[]>) => {
-			state.testAns = payload;
-		},
-		setReady: (state, { payload }: PayloadAction<boolean>) => {
-			state.ready = payload;
+		goNextRound: (state, { payload }: PayloadAction<number | undefined>) => {
+			state.round = payload || state.round + 1;
 		},
 		setTimerTime: (state, { payload }: PayloadAction<number | undefined>) => {
 			state.timer = payload || state.timer - 1;
 		},
-		setAge: (state, { payload }: PayloadAction<number | undefined>) => {
-			state.age = payload;
-		},
-		setGender: (state, { payload }: PayloadAction<number | undefined>) => {
-			state.gender = payload;
-		},
-		setUsuallyMode: (
-			state,
-			{ payload }: PayloadAction<ThemeEnum.Dark | ThemeEnum.Light>
-		) => {
-			state.usuallyMode = payload === ThemeEnum.Dark ? 'dark' : 'light';
-		},
-		setMoreReadableMode: (
-			state,
-			{ payload }: PayloadAction<ThemeEnum.Dark | ThemeEnum.Light>
-		) => {
-			state.moreReadableMode = payload === ThemeEnum.Dark ? 'dark' : 'light';
-		},
-		setMoreComfortableMode: (
-			state,
-			{ payload }: PayloadAction<ThemeEnum.Dark | ThemeEnum.Light>
-		) => {
-			state.moreComfortableMode = payload === ThemeEnum.Dark ? 'dark' : 'light';
-		},
-		setDevice: (state, { payload }: PayloadAction<string>) => {
-			state.device = payload === 'computer' ? 'computer' : 'phone';
-		},
-		setFontSize: (state, { payload }: PayloadAction<number>) => {
-			state.fontSize = payload;
-		},
-		setHowOften: (state, { payload }: PayloadAction<number>) => {
-			state.howOften = payload;
-		},
-		initSurvey: (state) => {
-			state.age = undefined;
-			state.gender = undefined;
-			state.moreComfortableMode = undefined;
-			state.moreReadableMode = undefined;
-			state.device = undefined;
-			state.fontSize = defaultFontSize;
-			state.howOften = NaN;
-		},
 	},
 	extraReducers: {
 		// [requestRecord.pending.type]: (state) => {},
-		[requestRecord.fulfilled.type]: (state) => {
-			state.recordDone = true;
-		},
-		[requestRecord.rejected.type]: (state) => {},
+		// [requestRecord.fulfilled.type]: (state) => {
+		// 	state.recordDone = true;
+		// },
+		// [requestRecord.rejected.type]: (state) => {},
 	},
 });
 
 // state
-export type { TestState, TotalTestState, SurveyState, TestResult, AnsResult };
-
-// enum
-export { TestTypeEnum, FontTypeEnum, GenderEnum };
+export type { TotalTestState, CurTestState };
 
 const { actions, reducer: testReducer } = testSlice;
 
 // setter
 export const {
 	initAll,
-	recordResult,
-	setStart,
-	setReady,
-	resetUserAns,
-	setUserAns,
-	setTestAns,
-	initTest,
-	goNextTurn,
+	addWrong,
+	addCorrect,
+	goNextStep,
+	goNextRound,
 	setTimerTime,
-	setAge,
-	setGender,
-	setMoreComfortableMode,
-	setMoreReadableMode,
-	setUsuallyMode,
-	setDevice,
-	setFontSize,
-	setHowOften,
-	initSurvey,
 } = actions;
 
 // thunk
-export { requestRecord };
+// export { requestRecord };
 
 // reducer
 export default testReducer;
 
 // getter
-export { getTestState, getFinishedTest, getSurveyState, getTestResult };
+export { getCurTestState };
 
-export { defaultTimerTime, defaultFontSize };
+export { defaultTimer };
