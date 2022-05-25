@@ -42,7 +42,7 @@ const Test = ({ curTestState, onInitAll }: Props) => {
 			</Head>
 			<Container>
 				<StepIndicator step={2} />
-				<h1 className={styles.description}>{round + 1} 단계</h1>
+				<h1 className={styles.description}>{Math.min(round + 1, 3)} 단계</h1>
 				<h3 className={styles.questionText}>{comment[round]}</h3>
 				<DisplayTestState />
 				<Grape isPractice={false} />
