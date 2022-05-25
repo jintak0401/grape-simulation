@@ -57,7 +57,7 @@ const Practice = ({ curTestState, onInitAll }: Props) => {
 					&nbsp;을 골라주세요!
 				</h2>
 				<DisplayTestState isPractice={true} />
-				<Grape N={1} isPractice={true} />
+				<Grape isPractice={true} />
 				<h3 className={styles.questionText} style={{ marginBottom: 0 }}>
 					<span style={getStyle(condition1)}>
 						맞으면{' '}

@@ -45,7 +45,7 @@ const Test = ({ curTestState, onInitAll }: Props) => {
 				<h1 className={styles.description}>{round + 1} 단계</h1>
 				<h3 className={styles.questionText}>{comment[round]}</h3>
 				<DisplayTestState />
-				<Grape N={Math.min(round + 1, 3)} isPractice={false} />
+				<Grape isPractice={false} />
 				<div style={{ height: '20vh' }} />
 			</Container>
 		</Fragment>

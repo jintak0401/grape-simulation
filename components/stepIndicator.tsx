@@ -19,7 +19,7 @@ const StepIndicator = ({ step, curTestState }: Props) => {
 		if (ref.current) {
 			if (round === 2) width = ref.current.offsetWidth;
 			else {
-				width = ref.current.offsetWidth * ((round + 1) / 3);
+				width = ref.current.offsetWidth * Math.min((round + 1) / 3, 1);
 			}
 		}
 		return (
