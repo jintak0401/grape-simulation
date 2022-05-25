@@ -2,10 +2,15 @@
 
 .description {
   font-size: $description-font-size;
+  color: $title-font-color;
+}
+
+.questionText {
+  font-size: 20px;
   color: $description-font-color;
 }
 
-.description__cell {
+.questionText__cell {
   display: inline-block;
   width: 20px;
   height: 20px;
@@ -22,8 +27,7 @@
 
 }
 
-
-.description__textBall {
+.questionText__textBall {
   display: inline-block;
   width: 20px;
   height: 20px;

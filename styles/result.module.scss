@@ -1,0 +1,62 @@
+@import "variable.module";
+
+.grid {
+  width: 350px;
+  height: 350px;
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.grid__text {
+  display: flex;
+  font-size: 30px;
+  font-weight: bold;
+  border: solid 1px black;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  &[data-status="strong"] {
+    color: $blue-color;
+  }
+  &[data-status="weak"] {
+    color: $red-color
+  }
+  &[data-status="normal"] {
+    color: $description-font-color;
+  }
+}
+
+.description {
+  font-size: 20px;
+  color: $title-font-color;
+  text-align: center;
+}
+
+.description__purpleBall {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: $purple-regular;
+  border-radius: 100px;
+  vertical-align: middle;
+  margin-bottom: 5px;
+}
+
+.description__circleNum {
+  font-weight: bold;
+
+  &[data-color="red"] {
+    color: $red-color;
+  }
+  &[data-color="blue"] {
+    color: $blue-color;
+  }
+}
+
+.emoji{
+  font-size: $emoji-size;
+  margin-bottom: 10px;
+}

@@ -1,0 +1,114 @@
+@import "variable.module";
+
+@mixin mixin__modeSelect__question() {
+  text-align: center;
+  color: var(--titleFontColor);
+  transition: 0.3s $animation color;
+  margin-bottom: 50px;
+  word-break: keep-all;
+  line-height: 1.5;
+}
+
+.modeSelect__question {
+  @include mixin__modeSelect__question();
+}
+
+.modeSelect {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
+//@mixin mixin__modeCell($font-color, $background-color, $hover: true) {
+//  width: 45%;
+//  height: 150px;
+//  font-size: 1.4em;
+//  transition: 0.6s $animation transform;
+//  border-radius: $border-radius;
+//  color: $font-color;
+//  background-color: $background-color;
+//  cursor: pointer;
+//  text-align: center;
+//  display: flex;
+//  justify-content: center;
+//  align-items: center;
+//
+//  @if $hover{
+//    &:hover {
+//      transform: scale(1.15, 1.15);
+//    }
+//  }
+//}
+//
+//.modeCell__dark {
+//  @include mixin__modeCell($dark-title-color, $default-black);
+//
+//  &__selected {
+//    @include mixin__modeCell($dark-title-color, $default-black, false);
+//    border: solid 2px $active-color;
+//  }
+//}
+//
+//.modeCell__light {
+//  @include mixin__modeCell(black, $default-white);
+//
+//  &__selected {
+//    @include mixin__modeCell(black, $default-white, false);
+//    border: solid 2px $active-color;
+//  }
+//}
+
+.surveyContainer {
+  width: 100%;
+  max-width: 600px;
+  text-align: left;
+  padding: 20px 30px 0;
+}
+
+.title {
+  width: 100%;
+  text-align: center;
+  color: var(--titleFontColor);
+}
+
+//@mixin mixin__modeLabel($fontcolor, $backgroundColor) {
+//  display: inline-block;
+//  padding: 3px 10px;
+//  color: $fontcolor;
+//  background-color: $backgroundColor;
+//}
+//
+//.modeLabel__light {
+//  @include mixin__modeLabel(black, $default-white);
+//}
+//
+//.modeLabel__dark {
+//  @include mixin__modeLabel(white, $default-black);
+//}
+
+.surveyElement {
+  //padding-top: 20px;
+  margin: 50px 0;
+}
+
+.surveyElement__questionText {
+  font-size: 20px;
+}
+
+.surveyElement__input {
+  padding-top: 10px;
+}
+
+.emoji {
+  font-size: $emoji-size;
+  margin-bottom: 0;
+}
+
+.description {
+  margin: 0;
+  font-size: $description-font-size;
+  line-height: 1.5;
+  color: var(--titleFontColor);
+}
+
+

@@ -1,21 +1,23 @@
 import styles from '@styles/grape.module.scss';
+import { RefObject } from 'react';
 
 type Props = OwnProps;
 
-const Cell = ({ active, onClick, idx }: Props) => {
+const Cell = ({ active, idx, innerRef }: Props) => {
 	return (
 		<div
 			className={styles.grape__cell}
 			data-active={active}
-			onClick={() => onClick(idx)}
+			id={idx.toString()}
+			ref={innerRef}
 		/>
 	);
 };
 
 interface OwnProps {
 	active: boolean;
-	onClick: (idx: number) => void;
 	idx: number;
+	innerRef?: RefObject<HTMLDivElement>;
 }
 
 export default Cell;

@@ -13,7 +13,7 @@
 
 .container {
   width: 100vw;
-  height: 100vh;
+  //height: 100vh;
   min-height: 100vh;
   transition: 0.3s $animation background-color;
   display: flex;
@@ -107,4 +107,29 @@
   font-size: $display-state-font-size;
   align-items: center;
   @include mixin__displayTest__element();
+}
+
+.stepIndicator {
+  max-width: 80%;
+  width: 300px;
+  height: 5px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 15px;
+  //margin-top: 200px;
+}
+
+@mixin mixin__stepIndicator__element() {
+  height: 100%;
+  transition: 0.3s $animation all;
+}
+
+.stepIndicator__element {
+  @include mixin__stepIndicator__element();
+  background-color: $indicator-grey;
+}
+
+.stepIndicator__element__active {
+  @include mixin__stepIndicator__element();
+  background-color: $indicator-active;
 }

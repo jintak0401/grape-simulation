@@ -10,25 +10,6 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   word-break: keep-all;
   text-align: center;
-  //color: var(--fontColor);
-  //background-color: var(--backgroundColor);
-}
-
-html[data-theme="light"] {
-  --fontColor: #444444;
-  --titleFontColor: #292929;
-  --backgroundColor: white;
-  --redColor: #FF0F0F;
-  --greyColor: #E6E6E6;
-}
-
-html[data-theme="dark"] {
-  --fontColor: #DDDDDD;
-  --titleFontColor: #e2e3eb;
-  --backgroundColor: #1F2023;
-  --redColor: #FF0F0F;
-  --greyColor: rgba(255, 255, 255, 0.2);
-  //--redColor: #B0002;
 }
 
 @font-face {

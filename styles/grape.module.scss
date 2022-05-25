@@ -22,6 +22,7 @@
 
   &[data-ready="true"] {
     filter: blur(10px);
+    cursor: default;
   }
 }
 

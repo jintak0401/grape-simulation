@@ -9,17 +9,17 @@ import {
 import { AppDispatch } from '@app/store';
 import { connect } from 'react-redux';
 import Container from '@components/container';
-import { DisplayTestState, Grape } from '@components';
-import GoNextButton from '@components/goNextButton';
+import { DisplayTestState, Grape, StepIndicator } from '@components';
 import styles from '@styles/test.module.scss';
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 type Props = StateProps & DispatchProps;
 
-const Test = ({ curTestState, onGoNextRound, onInitAll }: Props) => {
+const Test = ({ curTestState, onInitAll }: Props) => {
 	const router = useRouter();
-	const { round, timer, curCorrect, curWrong } = curTestState;
+	const { round } = curTestState;
 
 	const comment = [
 		'처음은 가볍게 큰 버튼으로 시작해볼까요?',
@@ -32,23 +32,23 @@ const Test = ({ curTestState, onGoNextRound, onInitAll }: Props) => {
 	}, []);
 
 	useEffect(() => {
-		if (timer === 0) {
-			console.log(`timer: ${timer} in /test/index.tsx`);
-		}
-	}, [timer]);
-
-	useEffect(() => {
-		if (round === 3) router.push('/survey');
+		if (round === 3) router.replace('/survey');
 	}, [round]);
 
 	return (
-		<Container>
-			<h1>{round + 1} 단계</h1>
-			<h3 className={styles.description}>{comment[round]}</h3>
-			<DisplayTestState />
-			<Grape N={Math.min(round + 1, 3)} isPractice={false} />
-			<GoNextButton goNext={() => onGoNextRound((round + 1) % 3)} />
-		</Container>
+		<Fragment>
+			<Head>
+				<title>포도알 | 테스트</title>
+			</Head>
+			<Container>
+				<StepIndicator step={2} />
+				<h1 className={styles.description}>{round + 1} 단계</h1>
+				<h3 className={styles.questionText}>{comment[round]}</h3>
+				<DisplayTestState />
+				<Grape N={Math.min(round + 1, 3)} isPractice={false} />
+				<div style={{ height: '20vh' }} />
+			</Container>
+		</Fragment>
 	);
 };
 

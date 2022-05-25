@@ -1,18 +1,111 @@
-import Container from '@components/container';
+import { Container, RedirectSentence } from '@components';
+import {
+	GoNextButton,
+	InputAge,
+	SelectDevice,
+	SelectGame,
+	SelectGender,
+	SelectHand,
+	SelectTicketing,
+	StepIndicator,
+} from '@components';
+import styles from '@styles/survey.module.scss';
+import { ThemeProvider } from '@mui/material';
+import { createTheme } from '@mui/material/styles';
+import { Fragment, useEffect, useState } from 'react';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { handleRefreshAndGoBack } from '@lib/unloadCallback';
+import {
+	checkBound,
+	getTestResultState,
+	TestResultState,
+} from '@features/testSlice';
+import { connect } from 'react-redux';
 
-const Survey = () => {
-	// 1. 왼손잡이 오른손잡이
-	// 2. 기기
-	// 3. 총게임 자주 하는지
-	// 4. 콘서트 티켓팅을 해본 경험 여부
-	// 5. 나이
-	// 6. 성별
+type Props = StateProps;
+
+const Survey = ({ testResultState }: Props) => {
+	const router = useRouter();
+	const [needRedirect, setNeedRedirect] = useState<boolean | undefined>();
+
+	const { totalCorrect } = testResultState;
+
+	const goNext = () => {
+		router.replace('/result');
+	};
+
+	const theme = createTheme({
+		palette: {
+			primary: {
+				main: '#592FD1',
+			},
+		},
+	});
+
+	const isDisabled = () => {
+		return false;
+	};
+
+	useEffect(() => {
+		if (
+			totalCorrect.filter((correct) => correct > checkBound).length !==
+			totalCorrect.length
+		) {
+			setNeedRedirect(true);
+		} else {
+			setNeedRedirect(false);
+		}
+	}, []);
+
+	useEffect(() => handleRefreshAndGoBack(router));
 
 	return (
-		<Container>
-			<h1>설문</h1>
-		</Container>
+		<Fragment>
+			<Head>
+				<title>포도알 | 설문</title>
+			</Head>
+			{needRedirect === false ? (
+				<ThemeProvider theme={theme}>
+					<Container>
+						<StepIndicator step={3} />
+						<h1 className={styles.emoji}>🥳</h1>
+						<h1 className={styles.title}>마지막 단계에요!</h1>
+						<p className={styles.description}>
+							정확한 결과를 위해
+							<br />
+							아래 질문에 답해주세요
+						</p>
+						<div className={styles.surveyContainer}>
+							<SelectDevice />
+							<SelectGender />
+							<InputAge />
+							<SelectHand />
+							<SelectGame />
+							<SelectTicketing />
+						</div>
+						<GoNextButton goNext={goNext} disabled={isDisabled()} />
+					</Container>
+				</ThemeProvider>
+			) : needRedirect === true ? (
+				<Container>
+					<RedirectSentence />
+					<GoNextButton
+						goNext={() => router.replace('/')}
+						body={'제대로 할게요'}
+					/>
+				</Container>
+			) : null}
+		</Fragment>
 	);
 };
 
-export default Survey;
+interface StateProps {
+	testResultState: TestResultState;
+}
+
+const mapStateToProps = (state: RootState): StateProps => ({
+	testResultState: getTestResultState(state),
+});
+
+export default connect(mapStateToProps)(Survey);
