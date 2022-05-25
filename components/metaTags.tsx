@@ -6,7 +6,7 @@ const MetaTags = () => {
 			<title>포도알 시뮬레이션</title>
 
 			<meta name="description" content="티켓팅 연습을 해보세요!" />
-			<link rel="canonical" href="https://dark-vs-light.vercel.app/" />
+			<link rel="canonical" href="https://grape-simulation.vercel.app/" />
 			<link rel="icon" href="/favicon.ico" />
 			<meta name="robots" content="index, follow" />
 			<meta
@@ -18,11 +18,11 @@ const MetaTags = () => {
 
 			{/*og 메타태그*/}
 			<meta property="og:type" content="website" />
-			<meta property="og:url" content="https://dark-vs-light.vercel.app" />
+			<meta property="og:url" content="https://grape-simulation.vercel.app/" />
 			<meta property="og:title" content="포도알/티켓팅 시뮬레이션" />
 			<meta
 				property="og:image"
-				content="https://dark-vs-light.vercel.app/thumbnail.png"
+				content="https://grape-simulation.vercel.app/thumbnail.png"
 			/>
 			<meta
 				property="og:description"
@@ -35,7 +35,10 @@ const MetaTags = () => {
 
 			{/*트위터 메타태그*/}
 			<meta name="twitter:card" content="summary" />
-			<meta property="twitter:url" content="https://dark-vs-light.vercel.app" />
+			<meta
+				property="twitter:url"
+				content="https://grape-simulation.vercel.app"
+			/>
 			<meta name="twitter:title" content="포도알/티켓팅 시뮬레이션" />
 			<meta
 				name="twitter:description"
@@ -43,7 +46,7 @@ const MetaTags = () => {
 			/>
 			<meta
 				name="twitter:image"
-				content="https://dark-vs-light.vercel.app/thumbnail.png"
+				content="https://grape-simulation.vercel.app/thumbnail.png"
 			/>
 		</Head>
 	);
