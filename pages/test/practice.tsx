@@ -2,7 +2,7 @@ import Container from '@components/container';
 import Grape from '@components/grape';
 import styles from '@styles/test.module.scss';
 import GoNextButton from '@components/goNextButton';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { CurTestState, getCurTestState, initAll } from '@features/testSlice';
 import { connect } from 'react-redux';
 import { AppDispatch } from '@app/store';
@@ -15,6 +15,7 @@ type Props = StateProps & DispatchProps;
 
 const Practice = ({ curTestState, onInitAll }: Props) => {
 	const router = useRouter();
+	const ref = useRef<HTMLButtonElement | null>(null);
 	const { curWrong, curCorrect } = curTestState;
 	const [condition1, setCondition1] = useState(false);
 	const [condition2, setCondition2] = useState(false);
@@ -36,7 +37,10 @@ const Practice = ({ curTestState, onInitAll }: Props) => {
 
 	useEffect(() => {
 		if ((curWrong > 0 || curCorrect > 0) && !condition1) setCondition1(true);
-		else if (curWrong > 0 || curCorrect >= 3) setCondition2(true);
+		else if ((curWrong > 0 || curCorrect >= 3) && !condition2) {
+			setCondition2(true);
+			ref.current?.scrollIntoView({ behavior: 'smooth' });
+		}
 	}, [curCorrect, curWrong]);
 
 	useEffect(() => handleRefreshAndGoBack(router));
@@ -83,6 +87,7 @@ const Practice = ({ curTestState, onInitAll }: Props) => {
 					goNext={goNext}
 					body={'테스트 시작'}
 					disabled={!condition2}
+					innerRef={ref}
 				/>
 			</Container>
 		</Fragment>

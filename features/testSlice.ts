@@ -23,13 +23,13 @@ interface SurveyState {
 }
 
 interface TotalTestState extends TestState, SurveyState {
-	correctOffset: string[][]; // [round][구역][x, y]
-	wrongOffset: string[][];
+	correctOffset: number[][][][]; // [round][구역][x, y]
+	wrongOffset: number[][][][];
 	recordDone: boolean;
 }
 
 const initOffset = () => {
-	return Array.from({ length: 3 }, () => Array.from({ length: 9 }, () => ''));
+	return Array.from({ length: 3 }, () => Array.from({ length: 9 }, () => []));
 };
 
 const checkBound = 5;
@@ -87,26 +87,19 @@ const getSurveyState = createSelector(
 	})
 );
 
-const getOffset = createSelector(
-	[(state: RootState) => state.testReducer],
-	(state: TotalTestState) => ({
-		correctOffset: state.correctOffset[state.round],
-		wrongOffset: state.wrongOffset[state.round],
-	})
-);
-
-const convertArea = (arr: string[][]) => {
+const convertArea = (arr: number[][][][]) => {
 	const ret: number[] = [];
 	ret.length = 9;
 	for (let i = 0; i < 9; ret[i++] = 0);
-	for (let round = 0; round < 3; round++) {
-		const result = [...arr[round]];
-		result.forEach((str, idx) => {
-			ret[idx] += str.split('/').length - 1;
-		});
+	for (const roundResult of arr) {
+		for (const area in roundResult) {
+			const areaResult = roundResult[area];
+			ret[area] += areaResult.length;
+		}
 	}
 	return ret;
 };
+
 const getTestResultState = createSelector(
 	[(state: RootState) => state.testReducer],
 	(state: TotalTestState): TestResultState => ({
@@ -121,8 +114,8 @@ const getTestResultState = createSelector(
 interface RecordRequestData {
 	c: string; // 맞은 갯수
 	w: string; // 틀린 갯수
-	co: string[]; // 맞은 것들 offset
-	wo: string[]; // 틀린 것들 offset
+	co: number[][][][]; // 맞은 것들 offset
+	wo: number[][][][]; // 틀린 것들 offset
 	a: string; // 나이
 	h: string; // 사용하는 손 (l: 왼손, r: 오른손)
 	g: string; // 성별 (m: 남자, f: 여자)
@@ -136,30 +129,8 @@ const getRecordRequestData = createSelector(
 	(state: TotalTestState): RecordRequestData => {
 		const c = state.correct.join(',');
 		const w = state.wrong.join(',');
-		const co: string[] = [];
-		const wo: string[] = [];
-		for (let i = 0; i < 9; i++) {
-			co[i] = '';
-			wo[i] = '';
-		}
-		let tmpRound = 0;
-		for (const roundResult of state.correctOffset) {
-			for (const area in roundResult) {
-				const areaResult = roundResult[area];
-				if (areaResult.at(-1) === '/') co[area] += areaResult.slice(0, -1);
-				co[area] += tmpRound < 2 ? '|' : '';
-			}
-			tmpRound++;
-		}
-		tmpRound = 0;
-		for (const roundResult of state.wrongOffset) {
-			for (const area in roundResult) {
-				const areaResult = roundResult[area];
-				if (areaResult.at(-1) == '/') wo[area] += areaResult.slice(0, -1);
-				wo[area] += tmpRound < 2 ? '|' : '';
-			}
-			tmpRound++;
-		}
+		const co = state.correctOffset;
+		const wo = state.wrongOffset;
 
 		return {
 			c,
@@ -189,6 +160,8 @@ const requestRecord = createAsyncThunk(
 		}
 	}
 );
+
+const wrongBoundary = [100, 80, 60];
 
 const testSlice = createSlice({
 	name: 'test',
@@ -223,14 +196,19 @@ const testSlice = createSlice({
 		},
 		// payload: [구역, x좌표, y좌표]
 		addWrongOffset: (state, { payload }: PayloadAction<number[]>) => {
-			state.wrongOffset[state.round][
-				payload[0]
-			] += `${payload[1]},${payload[2]}/`;
+			if (
+				Math.abs(payload[1]) >= wrongBoundary[state.round] ||
+				Math.abs(payload[2]) >= wrongBoundary[state.round]
+			)
+				return;
+
+			state.wrongOffset[state.round][payload[0]].push([payload[1], payload[2]]);
 		},
 		addCorrectOffset: (state, { payload }: PayloadAction<number[]>) => {
-			state.correctOffset[state.round][
-				payload[0]
-			] += `${payload[1]},${payload[2]}/`;
+			state.correctOffset[state.round][payload[0]].push([
+				payload[1],
+				payload[2],
+			]);
 		},
 		setGender: (state, { payload }: PayloadAction<string>) => {
 			state.gender = payload;
@@ -295,7 +273,6 @@ export default testReducer;
 // getter
 export {
 	getCurTestState,
-	getOffset,
 	getSurveyState,
 	getTestResultState,
 	getRecordRequestData,

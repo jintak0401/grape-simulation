@@ -34,7 +34,6 @@ const Result = ({ testResultState, recordRequestData }: Props) => {
 		) {
 			router.replace('/redirect');
 		} else {
-			setNeedRequest(true);
 			const sortedWeak = [...wrongArea].sort((a, b) => a - b);
 			const sortedStrong = [...correctArea].sort((a, b) => b - a);
 			let weakIdx, strongIdx;
@@ -48,6 +47,7 @@ const Result = ({ testResultState, recordRequestData }: Props) => {
 				strongIdx = correctArea.indexOf(sortedStrong[1]);
 			setStrong(strongIdx);
 			setWeak(weakIdx);
+			setNeedRequest(true);
 		}
 	}, []);
 

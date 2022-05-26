@@ -5,8 +5,8 @@ import { RecordRequestData } from '@features/testSlice';
 // interface RecordRequestData {
 // 	c: string; // 맞은 갯수
 // 	w: string; // 틀린 갯수
-// 	co: string[]; // 맞은 것들 offset
-// 	wo: string[]; // 틀린 것들 offset
+// 	co: number[][][][]; // 맞은 것들 offset
+// 	wo: number[][][][]; // 틀린 것들 offset
 // 	a: string; // 나이
 // 	h: string; // 사용하는 손 (l: 왼손, r: 오른손)
 // 	g: string; // 성별 (m: 남자, f: 여자)
@@ -39,6 +39,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		}
 		try {
 			const data = convertData2Collections(req.body);
+			console.log(data);
 			const { id } = await db.collection('result').add(data);
 			res.status(200).json({ id });
 		} catch (e) {
@@ -78,28 +79,6 @@ function convertData2Collections(data: RecordRequestData): FireBaseData {
 	return { ...data, z: new Date() };
 }
 
-const convertOffset = (str: string[]): number[][][][] => {
-	const ret: number[][][][] = Array(3)
-		.fill(0)
-		.map(() =>
-			Array(9)
-				.fill(0)
-				.map(() => [])
-		);
-	for (const area in str) {
-		const areaResult = str[area];
-		const roundResults = areaResult.split('|');
-		for (const round in roundResults) {
-			const curRoundResult = roundResults[round];
-			const offsets = curRoundResult.split('/');
-			for (const unit of offsets) {
-				if (unit) ret[round][area].push(unit.split(',').map((v) => +v));
-			}
-		}
-	}
-	return ret;
-};
-
 function convertCollections2Data(data: FireBaseData): ConvertedData {
 	const age = parseInt(data.a);
 	const hand = data.h === 'l' ? 'left' : 'right';
@@ -111,10 +90,10 @@ function convertCollections2Data(data: FireBaseData): ConvertedData {
 
 	const correct = data.c.split(',').map((v) => +v);
 	const wrong = data.w.split(',').map((v) => +v);
-	const correctOffset = convertOffset(data.co);
-	const wrongOffset = convertOffset(data.wo);
+	const correctOffset = data.co;
+	const wrongOffset = data.wo;
 
-	const tmp = {
+	return {
 		age,
 		gender,
 		correct,
@@ -126,6 +105,4 @@ function convertCollections2Data(data: FireBaseData): ConvertedData {
 		wrong,
 		hand,
 	};
-
-	return tmp;
 }

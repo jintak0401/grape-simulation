@@ -91,7 +91,7 @@ const Survey = ({ testResultState }: Props) => {
 				<Container>
 					<RedirectSentence />
 					<GoNextButton
-						goNext={() => router.replace('/')}
+						goNext={() => router.replace('/test/practice')}
 						body={'제대로 할게요'}
 					/>
 				</Container>
