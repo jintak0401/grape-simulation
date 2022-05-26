@@ -44,11 +44,11 @@ const Grape = ({
 		const target = e.target as HTMLDivElement;
 		const rect = e.currentTarget.getBoundingClientRect();
 		const clickX = e.clientX - rect.left,
-			clickY = Math.round(e.clientY - rect.top);
+			clickY = e.clientY - rect.top;
 		if (target && target.dataset.active === 'true') {
 			if (!isPractice) {
-				const ox = target.offsetLeft + Math.floor(target.offsetWidth / 2),
-					oy = target.offsetTop + Math.floor(target.offsetHeight / 2);
+				const ox = target.offsetLeft + target.offsetWidth / 2,
+					oy = target.offsetTop + target.offsetHeight / 2;
 				target.dataset.active = String(false);
 				setRefs((prev) =>
 					prev.filter(
@@ -69,10 +69,8 @@ const Grape = ({
 					idx = -1;
 				refs.forEach((ref: RefObject<HTMLDivElement>, i) => {
 					if (ref.current) {
-						const ox =
-							ref.current.offsetLeft + Math.floor(ref.current.offsetWidth / 2);
-						const oy =
-							ref.current.offsetTop + Math.floor(ref.current.offsetHeight / 2);
+						const ox = ref.current.offsetLeft + ref.current.offsetWidth / 2;
+						const oy = ref.current.offsetTop + ref.current.offsetHeight / 2;
 						const xDiffVec = clickX - ox;
 						const yDiffVec = -(clickY - oy);
 						let curDiff;
