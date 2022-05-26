@@ -59,11 +59,14 @@
 
 .title {
   color: $title-font-color;
+  margin-bottom: 0;
+  margin-top: 0;
 }
 
 .description {
   color: $description-font-color;
   font-size: $description-font-size;
+  margin-bottom: 0;
 }
 
 .displayTestState {

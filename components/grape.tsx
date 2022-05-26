@@ -55,8 +55,8 @@ const Grape = ({
 						(ref: RefObject<HTMLDivElement>) => ref.current!.id !== target.id
 					)
 				);
-				const xVec = clickX - ox;
-				const yVec = -(clickY - oy);
+				const xVec = Math.round(clickX - ox);
+				const yVec = Math.round(-(clickY - oy));
 				onAddCorrectOffset([getArea(+target.id, round), xVec, yVec]);
 			}
 			onAddCorrect();
@@ -83,7 +83,11 @@ const Grape = ({
 					}
 				});
 				if (idx !== -1) {
-					onAddWrongOffset([getArea(+target.id, round), xVec, yVec]);
+					onAddWrongOffset([
+						getArea(+target.id, round),
+						Math.round(xVec),
+						Math.round(yVec),
+					]);
 				}
 			}
 			onAddWrong();
@@ -108,6 +112,11 @@ const Grape = ({
 	useEffect(() => {
 		if (isPractice) {
 			setPos(generatePos(round, isPractice));
+		}
+	}, [isPractice]);
+
+	useEffect(() => {
+		if (isPractice) {
 			return;
 		}
 		const interval = setInterval(() => {
@@ -123,7 +132,7 @@ const Grape = ({
 	// 0초 다 되었을 때
 	useEffect(() => {
 		if (isPractice) return;
-		if (timer === 0) {
+		else if (timer === 0) {
 			if (round === 2) setLoading(true);
 			else setReady(true);
 			onSetTimerTime(defaultTimer);

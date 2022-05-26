@@ -23,7 +23,7 @@ interface SurveyState {
 }
 
 interface TotalTestState extends TestState, SurveyState {
-	correctOffset: string[][]; // [round][구역][x, y]
+	correctOffset: string[][];
 	wrongOffset: string[][];
 	recordDone: boolean;
 }
@@ -32,7 +32,7 @@ const initOffset = () => {
 	return Array.from({ length: 3 }, () => Array.from({ length: 9 }, () => ''));
 };
 
-const checkBound = 5;
+const checkBound = 3;
 const defaultTimer = 20;
 const initialState: TotalTestState = {
 	recordDone: false,
