@@ -269,6 +269,7 @@ export type {
 	CurTestState,
 	TestResultState,
 	RecordRequestData,
+	SurveyState,
 };
 
 const { actions, reducer: testReducer } = testSlice;

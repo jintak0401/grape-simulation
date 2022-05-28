@@ -7,7 +7,7 @@ import { StepIndicator } from '@components';
 import Head from 'next/head';
 import { Fragment, useEffect } from 'react';
 import { AppDispatch } from '@app/store';
-import { initAll, setHand } from '@features/testSlice';
+import { initAll } from '@features/testSlice';
 import { connect } from 'react-redux';
 
 type Props = DispatchProps;

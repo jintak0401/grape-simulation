@@ -101,7 +101,6 @@ const Grape = ({
 	};
 
 	useEffect(() => {
-		console.log(`pos: ${pos}`);
 		if (isPractice) return;
 		setRefs((prev) =>
 			Array(pos.length)
@@ -111,7 +110,6 @@ const Grape = ({
 	}, [pos]);
 
 	useEffect(() => {
-		console.log('isPractice: true');
 		if (isPractice) {
 			setPos(generatePos(round, isPractice));
 		}

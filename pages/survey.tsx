@@ -18,24 +18,33 @@ import { useRouter } from 'next/router';
 import { handleRefreshAndGoBack } from '@lib/unloadCallback';
 import {
 	checkBound,
+	getRecordRequestData,
+	getSurveyState,
 	getTestResultState,
 	initRoundTime,
+	RecordRequestData,
+	requestRecord,
+	SurveyState,
 	TestResultState,
 } from '@features/testSlice';
 import { connect } from 'react-redux';
 import { AppDispatch } from '@app/store';
+import { useAppDispatch } from '@app/hooks';
 
 type Props = StateProps & DispatchProps;
 
-const Survey = ({ testResultState, onInitRoundTime }: Props) => {
+const Survey = ({
+	surveyState,
+	recordRequestData,
+	testResultState,
+	onInitRoundTime,
+}: Props) => {
 	const router = useRouter();
+	const dispatch = useAppDispatch();
 	const [needRedirect, setNeedRedirect] = useState<boolean | undefined>();
+	const { hand, age, gender, device, game, ticketing } = surveyState;
 
 	const { totalCorrect } = testResultState;
-
-	const goNext = () => {
-		router.replace('/result');
-	};
 
 	const theme = createTheme({
 		palette: {
@@ -46,12 +55,24 @@ const Survey = ({ testResultState, onInitRoundTime }: Props) => {
 	});
 
 	const isDisabled = () => {
-		return false;
+		return (
+			hand === '' &&
+			age === '' &&
+			gender === '' &&
+			device === '' &&
+			game === '' &&
+			ticketing === ''
+		);
+	};
+
+	const goNext = () => {
+		if (isDisabled()) return;
+		router.replace('/result');
+		dispatch(requestRecord(recordRequestData));
 	};
 
 	useEffect(() => {
 		onInitRoundTime();
-		console.log('init');
 		if (
 			totalCorrect.filter((correct) => correct >= checkBound).length !==
 			totalCorrect.length
@@ -106,10 +127,14 @@ const Survey = ({ testResultState, onInitRoundTime }: Props) => {
 
 interface StateProps {
 	testResultState: TestResultState;
+	surveyState: SurveyState;
+	recordRequestData: RecordRequestData;
 }
 
 const mapStateToProps = (state: RootState): StateProps => ({
 	testResultState: getTestResultState(state),
+	surveyState: getSurveyState(state),
+	recordRequestData: getRecordRequestData(state),
 });
 
 interface DispatchProps {
