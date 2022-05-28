@@ -109,7 +109,7 @@ const persistConfig = {
 
 export const persistedReducer = persistReducer(persistConfig, reducer);
 
-const makeConfiguredStore = (reducer: Reducer) =>
+export const makeConfiguredStore = (reducer: Reducer) =>
 	configureStore({
 		reducer,
 		devTools: process.env.NODE_ENV !== 'production',
@@ -145,8 +145,6 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 	unknown,
 	Action<string>
 >;
-
-export const persistor = persistStore(makeStore());
 
 export const wrapper = createWrapper(makeStore, {
 	debug: process.env.NODE_ENV !== 'production',
