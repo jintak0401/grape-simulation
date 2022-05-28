@@ -6,6 +6,7 @@
   display: grid;
   gap: 1px 1px;
   cursor: pointer;
+  -webkit-tap-highlight-color : transparent;
 
   &[data-round="0"] {
     grid-template-rows: repeat(9, 1fr);
