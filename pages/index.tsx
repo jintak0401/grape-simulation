@@ -5,14 +5,23 @@ import GoNextButton from '@components/goNextButton';
 import { useRouter } from 'next/router';
 import { StepIndicator } from '@components';
 import Head from 'next/head';
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
+import { AppDispatch } from '@app/store';
+import { initAll, setHand } from '@features/testSlice';
+import { connect } from 'react-redux';
 
-const Home = () => {
+type Props = DispatchProps;
+
+const Home = ({ onInitAll }: Props) => {
 	const router = useRouter();
 
 	const goNext = async () => {
 		await router.push('/test/practice');
 	};
+
+	useEffect(() => {
+		onInitAll();
+	}, []);
 
 	return (
 		<Fragment>
@@ -51,4 +60,12 @@ const Home = () => {
 	);
 };
 
-export default Home;
+interface DispatchProps {
+	onInitAll: () => void;
+}
+
+const mapDispatchToProps = (dispatch: AppDispatch): DispatchProps => ({
+	onInitAll: () => dispatch(initAll()),
+});
+
+export default connect(null, mapDispatchToProps)(Home);
