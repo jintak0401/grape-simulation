@@ -43,7 +43,7 @@ const initialState: TotalTestState = {
 	age: '',
 	gender: '',
 	round: 0,
-	timer: 0,
+	timer: defaultTimer,
 	correct: [0, 0, 0],
 	wrong: [0, 0, 0],
 	correctOffset: initOffset(),
@@ -209,6 +209,10 @@ const testSlice = createSlice({
 			state.age = '';
 			state.gender = '';
 		},
+		initRoundTime: (state) => {
+			state.timer = defaultTimer;
+			state.round = 0;
+		},
 		addWrong: (state) => {
 			state.wrong[state.round]++;
 		},
@@ -272,6 +276,7 @@ const { actions, reducer: testReducer } = testSlice;
 // setter
 export const {
 	initAll,
+	initRoundTime,
 	addWrong,
 	addCorrect,
 	goNextRound,

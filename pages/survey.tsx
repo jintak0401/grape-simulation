@@ -19,13 +19,15 @@ import { handleRefreshAndGoBack } from '@lib/unloadCallback';
 import {
 	checkBound,
 	getTestResultState,
+	initRoundTime,
 	TestResultState,
 } from '@features/testSlice';
 import { connect } from 'react-redux';
+import { AppDispatch } from '@app/store';
 
-type Props = StateProps;
+type Props = StateProps & DispatchProps;
 
-const Survey = ({ testResultState }: Props) => {
+const Survey = ({ testResultState, onInitRoundTime }: Props) => {
 	const router = useRouter();
 	const [needRedirect, setNeedRedirect] = useState<boolean | undefined>();
 
@@ -48,8 +50,10 @@ const Survey = ({ testResultState }: Props) => {
 	};
 
 	useEffect(() => {
+		onInitRoundTime();
+		console.log('init');
 		if (
-			totalCorrect.filter((correct) => correct > checkBound).length !==
+			totalCorrect.filter((correct) => correct >= checkBound).length !==
 			totalCorrect.length
 		) {
 			setNeedRedirect(true);
@@ -108,4 +112,12 @@ const mapStateToProps = (state: RootState): StateProps => ({
 	testResultState: getTestResultState(state),
 });
 
-export default connect(mapStateToProps)(Survey);
+interface DispatchProps {
+	onInitRoundTime: () => void;
+}
+
+const mapDispatchToProps = (dispatch: AppDispatch): DispatchProps => ({
+	onInitRoundTime: () => dispatch(initRoundTime()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Survey);

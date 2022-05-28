@@ -11,7 +11,7 @@ const getDiff = (a: number, b: number, len: number) => {
 	);
 };
 
-const generatePos = (round: number, isPractice?: boolean): number[] => {
+const generatePos = (round = 0, isPractice?: boolean): number[] => {
 	const unit = isPractice ? 3 : getRandomInt(2, 5);
 	const ret: number[] = [];
 	const len = grapeLen[round];

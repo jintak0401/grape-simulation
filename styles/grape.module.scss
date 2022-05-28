@@ -12,12 +12,12 @@
     grid-template-columns: repeat(9, 1fr);
   }
   &[data-round="1"] {
-    grid-template-rows: repeat(15, 1fr);
-    grid-template-columns: repeat(15, 1fr);
+    grid-template-rows: repeat(12, 1fr);
+    grid-template-columns: repeat(12, 1fr);
   }
   &[data-round="2"] {
-    grid-template-rows: repeat(27, 1fr);
-    grid-template-columns: repeat(27, 1fr);
+    grid-template-rows: repeat(15, 1fr);
+    grid-template-columns: repeat(15, 1fr);
   }
 
   &[data-ready="true"] {

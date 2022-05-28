@@ -33,10 +33,10 @@ const Grape = ({
 }: Props) => {
 	const { timer, round, curWrong, curCorrect } = curTestState;
 	const length = grapeLen[round] ** 2;
-	const [pos, setPos] = useState<number[]>(isPractice ? [24, 57, 81] : []);
 	const [ready, setReady] = useState<boolean>(!isPractice);
 	const [refs, setRefs] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const [pos, setPos] = useState<number[]>([]);
 	let refIdx = 0;
 
 	const onClickGrid = (e: MouseEvent<HTMLDivElement>) => {
@@ -116,11 +116,8 @@ const Grape = ({
 	}, [isPractice]);
 
 	useEffect(() => {
-		if (isPractice) {
-			return;
-		}
 		const interval = setInterval(() => {
-			if (!ready) {
+			if (!ready && !isPractice) {
 				onSetTimerTime();
 			}
 		}, 1000);
@@ -135,10 +132,10 @@ const Grape = ({
 		else if (timer === 0) {
 			if (round === 2) setLoading(true);
 			else setReady(true);
+			setPos([]);
 			onSetTimerTime(defaultTimer);
 			onGoNextRound();
 			refIdx = 0;
-			setPos([]);
 		}
 	}, [timer]);
 

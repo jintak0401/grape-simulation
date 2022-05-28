@@ -24,7 +24,7 @@ const Test = ({ curTestState, onInitAll }: Props) => {
 	const comment = [
 		'처음은 가볍게 큰 버튼으로 시작해볼까요?',
 		'버튼이 좀 작아졌지만 하실 수 있을거에요!',
-		'마지막은 실전처럼! 진짜 포도알 크기로!',
+		'마지막은 실전처럼! 티켓팅한다는 마음가짐!',
 	];
 
 	useEffect(() => {
