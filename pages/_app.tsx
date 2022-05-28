@@ -1,8 +1,6 @@
 import '@styles/globals.scss';
 import type { AppProps } from 'next/app';
-import { persistedReducer, wrapper } from '@app/store';
-import { persistStore } from 'redux-persist';
-import { legacy_createStore as createStore } from '@reduxjs/toolkit';
+import { persistor, wrapper } from '@app/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Fragment } from 'react';
 import Script from 'next/script';
@@ -10,8 +8,6 @@ import { GA_TRACKING_ID } from '@lib/gtag';
 import { MetaTags } from '@components';
 
 function MyApp({ Component, pageProps }: AppProps) {
-	const store = createStore(persistedReducer);
-	const persistor = persistStore(store);
 	return (
 		<Fragment>
 			<MetaTags />

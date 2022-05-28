@@ -146,6 +146,8 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 	Action<string>
 >;
 
+export const persistor = persistStore(makeStore());
+
 export const wrapper = createWrapper(makeStore, {
 	debug: process.env.NODE_ENV !== 'production',
 });
