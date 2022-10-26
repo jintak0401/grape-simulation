@@ -1,5 +1,11 @@
 # 포도알 시뮬레이션
 
+#### [체험 사이트](https://grape-simulation.vercel.app/)
+
+#### [결과 분석](https://github.com/jintak0401/grape-simulation/wiki/%EC%9C%A0%EC%A0%80-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EA%B2%B0%EA%B3%BC)
+
+<br/>
+
 ### 메인화면
 ![image](https://user-images.githubusercontent.com/32933980/197949630-f8a44ae7-ffad-44fc-baaf-c11a6eef1e08.png)
 
